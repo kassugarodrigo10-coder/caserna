@@ -33,17 +33,21 @@ exposto nas telas públicas — só o número de pontos descontados.
 
 ## Diretoria (login restrito)
 
-A aba Diretoria fica **totalmente oculta e inacessível** até ser configurada: ela não aparece
-no menu para ninguém, e a rota `/diretoria` mostra só um aviso enquanto o Supabase não
-estiver configurado.
+A aba Diretoria em si fica **oculta do menu até o login** — só aparece depois que alguém
+autorizado entra. O acesso ao login é público: um ícone de pessoa no topo da sidebar (e no
+topbar mobile) abre a tela de entrar/cadastrar pra qualquer visitante. A rota direta
+`/diretoria` também continua funcionando, com o mesmo formulário embutido na página.
 
 Fluxo depois de configurado:
 
-- Só quem tem o e-mail cadastrado na lista de autorizados consegue criar uma conta.
+- Só quem tem o e-mail cadastrado na lista de autorizados consegue de fato criar uma conta —
+  mas a resposta do cadastro é **sempre a mesma**, autorizado ou não, pra não denunciar quem
+  está ou não na lista. Um e-mail não autorizado só nunca recebe o e-mail de confirmação.
 - O cadastro é feito pelo próprio diretor (e-mail real + senha), com confirmação por e-mail
   de verdade (via Supabase Auth).
 - Depois de confirmar o e-mail e entrar, a aba "Diretoria" passa a aparecer no menu lateral
-  só para quem está logado.
+  só para quem está logado. O ícone de pessoa também vira o atalho pra ver a sessão ativa e
+  sair.
 
 ### Configurar (uma vez)
 

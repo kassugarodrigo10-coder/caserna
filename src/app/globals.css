@@ -1168,3 +1168,79 @@ footer.site-footer {
   padding: 3px 7px;
   border-radius: 6px;
 }
+
+/* ---------- Botão de acesso (ícone de pessoa) + modal de login ---------- */
+
+.account-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 5;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-faint);
+  cursor: pointer;
+}
+
+.account-btn:hover {
+  color: var(--text);
+  border-color: var(--line);
+}
+
+.account-btn.on {
+  color: #0a0d14;
+  background: linear-gradient(135deg, #7bd88f, #4ec674);
+  border-color: transparent;
+}
+
+.topbar .account-btn {
+  position: static;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal-panel {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--text-faint);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+
+.modal-close:hover {
+  color: var(--text);
+}

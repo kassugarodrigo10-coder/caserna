@@ -31,9 +31,11 @@ export default function DiretoriaAuthForm() {
         });
         const data = await res.json();
         if (!res.ok) {
-          setErro(data.error ?? 'Não foi possível concluir o cadastro.');
+          setErro(data.error ?? 'Não foi possível concluir o cadastro. Tente novamente mais tarde.');
         } else {
-          setMensagem('Cadastro enviado! Confira seu e-mail para confirmar a conta e depois entre por aqui.');
+          // Mensagem sempre igual, autorizado ou não — não dá pra saber pela resposta se o
+          // e-mail está liberado.
+          setMensagem('Se o cadastro for aprovado, você vai receber um e-mail de confirmação em instantes.');
         }
       }
     } finally {
@@ -43,7 +45,7 @@ export default function DiretoriaAuthForm() {
 
   if (!configured) {
     return (
-      <div className="diretoria-auth panel">
+      <div className="diretoria-auth">
         <div className="section-title" style={{ marginBottom: 4 }}>ACESSO RESTRITO</div>
         <h2 style={{ fontSize: 22, marginBottom: 8 }}>Diretoria</h2>
         <p style={{ color: 'var(--text-dim)', fontSize: 13.5 }}>

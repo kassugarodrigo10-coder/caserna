@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import Sidebar from './Sidebar';
+import AccountButton from './AccountButton';
 import { useAppState } from '@/context/AppStateContext';
 
 const ACCENT_VARS: Record<string, string> = {
@@ -30,7 +31,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
             ☰
           </button>
           <img src={`/logos/logo-${categoria}.png`} alt="Caserna Kart Racing" />
-          <span style={{ width: 40 }} />
+          <AccountButton />
         </div>
         <main className="content">{children}</main>
       </div>

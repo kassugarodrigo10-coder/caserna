@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAppState } from '@/context/AppStateContext';
 import { useAuth } from '@/context/AuthContext';
+import AccountButton from './AccountButton';
 import type { Categoria } from '@/types';
 
 const CATEGORIAS: Array<{ value: Categoria; label: string }> = [
@@ -26,6 +27,7 @@ export default function Sidebar() {
   return (
     <>
       <aside className={`sidebar${sidebarOpen ? ' open' : ''}`}>
+        <AccountButton />
         <div className="brand">
           {CATEGORIAS.map((c) => (
             <img

@@ -282,7 +282,7 @@ export default function DiretoriaPage() {
 
   if (!isDiretor) {
     return (
-      <div style={{ maxWidth: 420, margin: '60px auto' }}>
+      <div className="panel" style={{ maxWidth: 420, margin: '60px auto' }}>
         <DiretoriaAuthForm />
       </div>
     );
