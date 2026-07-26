@@ -4,6 +4,7 @@ export interface NotaCorrida {
   turno: Turno;
   corrida: number;
   categoria: Categoria;
+  tracado?: number;
   nome: string;
   tempoTotal: number;
   vmr: number;
@@ -49,6 +50,7 @@ export function computeEqualizacaoCorrida(etapa: Etapa): NotaCorrida[] {
       turno: etapa.turno,
       corrida: etapa.corrida,
       categoria: etapa.categoria,
+      tracado: etapa.tracado,
       nome: m.nome,
       tempoTotal: m.tempoTotal,
       vmr: m.vmr,
@@ -64,6 +66,7 @@ export interface EqualizacaoPiloto {
   porTurno: Record<1 | 2 | 3, number>;
   total: number;
   corridas: number;
+  media: number;
 }
 
 /** Pontuação de equalização acumulada na temporada, quebrada por turno — soma corrida a corrida. */
@@ -79,6 +82,7 @@ export function computeEqualizacaoTemporada(etapas: Etapa[], categorias: Categor
         porTurno: { 1: 0, 2: 0, 3: 0 },
         total: 0,
         corridas: 0,
+        media: 0,
       };
       row.porTurno[etapa.turno] += n.nota;
       row.total += n.nota;
@@ -87,5 +91,12 @@ export function computeEqualizacaoTemporada(etapas: Etapa[], categorias: Categor
     }
   }
 
-  return [...map.values()].sort((a, b) => b.total - a.total);
+  return [...map.values()]
+    .map((r) => ({ ...r, media: r.total / r.corridas }))
+    .sort((a, b) => b.total - a.total);
+}
+
+/** Traçados distintos usados por um conjunto de etapas — usado pro aviso de consistência do traçado. */
+export function tracadosDistintos(etapas: Etapa[]): number[] {
+  return [...new Set(etapas.map((e) => e.tracado).filter((t): t is number => t != null))];
 }

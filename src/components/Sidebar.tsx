@@ -89,14 +89,11 @@ export default function Sidebar() {
 
         {isDiretor && (
           <div className="special-block">
-            <div className="menu-label">Restrito</div>
-            <Link
-              href="/diretoria"
-              className={`menu-item${pathname === '/diretoria' ? ' active' : ''}`}
-              onClick={() => setSidebarOpen(false)}
-            >
-              <span className="ic">🔒</span>
+            <div className="menu-label">Acesso restrito</div>
+            <Link href="/diretoria" className="diretoria-item" onClick={() => setSidebarOpen(false)}>
+              <span className="ic">⚖️</span>
               Diretoria
+              <span className="tag">EQUALIZAÇÃO</span>
             </Link>
           </div>
         )}

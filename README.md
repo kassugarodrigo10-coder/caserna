@@ -49,7 +49,8 @@ Fluxo depois de configurado:
 
 1. Crie um projeto gratuito em https://supabase.com.
 2. No SQL Editor do projeto, rode o conteúdo de `supabase/schema.sql` (cria a tabela de
-   e-mails autorizados).
+   e-mails autorizados e já deixa `kassuga.rodrigo10@gmail.com` e
+   `viniciuskassuga@hotmail.com` liberados para o teste inicial).
 3. Copie `.env.example` para `.env.local` e preencha com as chaves do projeto (Project
    Settings → API): `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`,
    `SUPABASE_SERVICE_ROLE_KEY`.

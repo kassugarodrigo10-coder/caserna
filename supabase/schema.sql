@@ -12,5 +12,11 @@ create table if not exists diretoria_emails_autorizados (
 
 alter table diretoria_emails_autorizados enable row level security;
 
--- Exemplo de como o Sr. Kassuga adiciona um novo diretor (rodar no SQL editor):
+-- E-mails liberados para o teste inicial da Diretoria.
+insert into diretoria_emails_autorizados (email) values
+  ('kassuga.rodrigo10@gmail.com'),
+  ('viniciuskassuga@hotmail.com')
+on conflict (email) do nothing;
+
+-- Exemplo de como adicionar um novo diretor depois (rodar no SQL editor):
 -- insert into diretoria_emails_autorizados (email) values ('diretor@exemplo.com');
