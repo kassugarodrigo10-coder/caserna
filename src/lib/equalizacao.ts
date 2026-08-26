@@ -16,22 +16,29 @@ export interface NotaCorrida {
  * Nota de equalização (0-10) de uma corrida isolada: 10 menos 1 ponto por cada 1% de
  * atraso num índice ponderado (tempo total peso 1, VMR peso 1,5, média das 10 melhores
  * voltas peso 2) em relação ao melhor da própria corrida. Nunca mistura corridas diferentes.
+ *
+ * O "tempo total" entra no índice como ritmo médio (tempoTotalSeg / voltas), não o tempo
+ * bruto: como é uma corrida por tempo, quem larga com problema e completa menos voltas tem
+ * um tempo total bem menor sem ter sido mais rápido — comparar o bruto faria esse piloto
+ * parecer o melhor da corrida. O ritmo médio continua comparável independente de quantas
+ * voltas cada um completou.
  */
 export function computeEqualizacaoCorrida(etapa: Etapa): NotaCorrida[] {
   if (!etapa.voltas) return [];
 
   const metrics = etapa.resultados
-    .filter((r) => etapa.voltas![r.nome])
+    .filter((r) => etapa.voltas![r.nome] && r.voltas > 0)
     .map((r) => {
       const tempos = [...etapa.voltas![r.nome].tempos].sort((a, b) => a - b);
       const top10 = tempos.slice(0, 10);
       const top10Media = top10.length ? top10.reduce((a, b) => a + b, 0) / top10.length : r.melhorVolta;
-      return { nome: r.nome, tempoTotal: r.tempoTotalSeg, vmr: r.melhorVolta, top10Media };
+      const ritmoMedio = r.tempoTotalSeg / r.voltas;
+      return { nome: r.nome, tempoTotal: r.tempoTotalSeg, ritmoMedio, vmr: r.melhorVolta, top10Media };
     });
 
   if (!metrics.length) return [];
 
-  const bestTempoTotal = Math.min(...metrics.map((m) => m.tempoTotal));
+  const bestRitmo = Math.min(...metrics.map((m) => m.ritmoMedio));
   const bestVmr = Math.min(...metrics.map((m) => m.vmr));
   const bestTop10 = Math.min(...metrics.map((m) => m.top10Media));
 
@@ -41,7 +48,7 @@ export function computeEqualizacaoCorrida(etapa: Etapa): NotaCorrida[] {
   const PESO_TOTAL = PESO_TEMPO + PESO_VMR + PESO_TOP10;
 
   return metrics.map((m) => {
-    const pctTempo = ((m.tempoTotal - bestTempoTotal) / bestTempoTotal) * 100;
+    const pctTempo = ((m.ritmoMedio - bestRitmo) / bestRitmo) * 100;
     const pctVmr = ((m.vmr - bestVmr) / bestVmr) * 100;
     const pctTop10 = ((m.top10Media - bestTop10) / bestTop10) * 100;
     const indicePonderado = (pctTempo * PESO_TEMPO + pctVmr * PESO_VMR + pctTop10 * PESO_TOP10) / PESO_TOTAL;
