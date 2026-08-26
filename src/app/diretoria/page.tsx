@@ -6,7 +6,7 @@ import { createClient } from '@/lib/supabase/client';
 import DiretoriaAuthForm from '@/components/DiretoriaAuthForm';
 import PilotChips from '@/components/PilotChips';
 import { etapas, faltas } from '@/data/etapas';
-import { computeEqualizacaoCorrida, computeEqualizacaoTemporada, tracadosDistintos, type NotaCorrida } from '@/lib/equalizacao';
+import { computeEqualizacaoCorridas, computeEqualizacaoTemporada, tracadosDistintos, type NotaCorrida } from '@/lib/equalizacao';
 import { titleCase, formatTempo, CATEGORIA_LABEL } from '@/lib/format';
 import type { Categoria, Etapa } from '@/types';
 
@@ -73,7 +73,7 @@ function GrupoEqualizacao({
   const corridaSelecionada = corridaKey ? corridas.find((c) => c.key === corridaKey) : undefined;
 
   const rankingCorrida: NotaCorrida[] = corridaSelecionada
-    ? corridaSelecionada.etapas.flatMap((e) => computeEqualizacaoCorrida(e)).sort((a, b) => b.nota - a.nota)
+    ? computeEqualizacaoCorridas(corridaSelecionada.etapas).sort((a, b) => b.nota - a.nota)
     : [];
   const rankingTemporada = computeEqualizacaoTemporada(todasEtapas, categorias);
   const totalRanking = corridaSelecionada ? rankingCorrida.length : rankingTemporada.length;
