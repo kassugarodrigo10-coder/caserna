@@ -13,9 +13,16 @@ export interface NotaCorrida {
 }
 
 /**
- * Nota de equalização (0-10) de uma corrida isolada: 10 menos 1 ponto por cada 1% de
- * atraso num índice ponderado (tempo total peso 1, VMR peso 1,5, média das 10 melhores
- * voltas peso 2) em relação ao melhor da própria corrida. Nunca mistura corridas diferentes.
+ * Nota de equalização (0-10) de uma corrida (ou de um grupo de etapas da mesma corrida —
+ * turno+corrida — quando Elite e Graduados compartilham a mesma tabela): 10 menos 1 ponto
+ * por cada 1% de atraso num índice ponderado (tempo total peso 1, VMR peso 1,5, média das
+ * 10 melhores voltas peso 2) em relação ao melhor entre TODOS os pilotos passados aqui.
+ *
+ * Passar mais de uma etapa só faz sentido quando elas são a mesma corrida (mesmo
+ * turno+corrida, mesma noite/traçado) — ex.: Elite e Graduados, que correm em baterias
+ * separadas mas compõem uma tabela só na Diretoria. Nesse caso a referência (o "10") é uma
+ * só pra ambas as categorias, senão cada categoria vira uma escala 0-10 independente e a
+ * tabela combinada compara maçãs com laranjas. Nunca misture etapas de corridas diferentes.
  *
  * O "tempo total" entra no índice como ritmo médio (tempoTotalSeg / voltas), não o tempo
  * bruto: como é uma corrida por tempo, quem larga com problema e completa menos voltas tem
@@ -23,18 +30,26 @@ export interface NotaCorrida {
  * parecer o melhor da corrida. O ritmo médio continua comparável independente de quantas
  * voltas cada um completou.
  */
-export function computeEqualizacaoCorrida(etapa: Etapa): NotaCorrida[] {
-  if (!etapa.voltas) return [];
-
-  const metrics = etapa.resultados
-    .filter((r) => etapa.voltas![r.nome] && r.voltas > 0)
-    .map((r) => {
-      const tempos = [...etapa.voltas![r.nome].tempos].sort((a, b) => a - b);
-      const top10 = tempos.slice(0, 10);
-      const top10Media = top10.length ? top10.reduce((a, b) => a + b, 0) / top10.length : r.melhorVolta;
-      const ritmoMedio = r.tempoTotalSeg / r.voltas;
-      return { nome: r.nome, tempoTotal: r.tempoTotalSeg, ritmoMedio, vmr: r.melhorVolta, top10Media };
-    });
+export function computeEqualizacaoCorridas(etapas: Etapa[]): NotaCorrida[] {
+  const metrics = etapas.flatMap((etapa) => {
+    if (!etapa.voltas) return [];
+    return etapa.resultados
+      .filter((r) => etapa.voltas![r.nome] && r.voltas > 0)
+      .map((r) => {
+        const tempos = [...etapa.voltas![r.nome].tempos].sort((a, b) => a - b);
+        const top10 = tempos.slice(0, 10);
+        const top10Media = top10.length ? top10.reduce((a, b) => a + b, 0) / top10.length : r.melhorVolta;
+        const ritmoMedio = r.tempoTotalSeg / r.voltas;
+        return {
+          etapa,
+          nome: r.nome,
+          tempoTotal: r.tempoTotalSeg,
+          ritmoMedio,
+          vmr: r.melhorVolta,
+          top10Media,
+        };
+      });
+  });
 
   if (!metrics.length) return [];
 
@@ -54,10 +69,10 @@ export function computeEqualizacaoCorrida(etapa: Etapa): NotaCorrida[] {
     const indicePonderado = (pctTempo * PESO_TEMPO + pctVmr * PESO_VMR + pctTop10 * PESO_TOP10) / PESO_TOTAL;
     const nota = Math.max(0, 10 - indicePonderado);
     return {
-      turno: etapa.turno,
-      corrida: etapa.corrida,
-      categoria: etapa.categoria,
-      tracado: etapa.tracado,
+      turno: m.etapa.turno,
+      corrida: m.etapa.corrida,
+      categoria: m.etapa.categoria,
+      tracado: m.etapa.tracado,
       nome: m.nome,
       tempoTotal: m.tempoTotal,
       vmr: m.vmr,
@@ -65,6 +80,11 @@ export function computeEqualizacaoCorrida(etapa: Etapa): NotaCorrida[] {
       nota,
     };
   });
+}
+
+/** Nota de equalização de uma única etapa — atalho pra quando não há mais de uma categoria pra combinar. */
+export function computeEqualizacaoCorrida(etapa: Etapa): NotaCorrida[] {
+  return computeEqualizacaoCorridas([etapa]);
 }
 
 export interface EqualizacaoPiloto {
@@ -76,13 +96,26 @@ export interface EqualizacaoPiloto {
   media: number;
 }
 
-/** Pontuação de equalização acumulada na temporada, quebrada por turno — soma corrida a corrida. */
+/**
+ * Pontuação de equalização acumulada na temporada, quebrada por turno — soma corrida a
+ * corrida. Agrupa por turno+corrida antes de pontuar (mesmo critério da visão de corrida
+ * específica), pra Elite e Graduados de uma mesma noite usarem a mesma referência.
+ */
 export function computeEqualizacaoTemporada(etapas: Etapa[], categorias: Categoria[]): EqualizacaoPiloto[] {
   const relevantes = etapas.filter((e) => categorias.includes(e.categoria));
-  const map = new Map<string, EqualizacaoPiloto>();
 
-  for (const etapa of relevantes) {
-    for (const n of computeEqualizacaoCorrida(etapa)) {
+  const grupos = new Map<string, Etapa[]>();
+  for (const e of relevantes) {
+    const key = `${e.turno}|${e.corrida}`;
+    const arr = grupos.get(key) ?? [];
+    arr.push(e);
+    grupos.set(key, arr);
+  }
+
+  const map = new Map<string, EqualizacaoPiloto>();
+  for (const grupoEtapas of grupos.values()) {
+    const turno = grupoEtapas[0].turno;
+    for (const n of computeEqualizacaoCorridas(grupoEtapas)) {
       const row = map.get(n.nome) ?? {
         nome: n.nome,
         categoria: n.categoria,
@@ -91,7 +124,7 @@ export function computeEqualizacaoTemporada(etapas: Etapa[], categorias: Categor
         corridas: 0,
         media: 0,
       };
-      row.porTurno[etapa.turno] += n.nota;
+      row.porTurno[turno] += n.nota;
       row.total += n.nota;
       row.corridas += 1;
       map.set(n.nome, row);
