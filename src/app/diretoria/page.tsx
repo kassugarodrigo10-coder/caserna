@@ -6,7 +6,7 @@ import { createClient } from '@/lib/supabase/client';
 import DiretoriaAuthForm from '@/components/DiretoriaAuthForm';
 import PilotChips from '@/components/PilotChips';
 import { etapas, faltas } from '@/data/etapas';
-import { computeEqualizacaoCorrida, computeEqualizacaoTemporada, tracadosDistintos } from '@/lib/equalizacao';
+import { computeEqualizacaoCorrida, computeEqualizacaoTemporada, tracadosDistintos, type NotaCorrida } from '@/lib/equalizacao';
 import { titleCase, formatTempo, CATEGORIA_LABEL } from '@/lib/format';
 import type { Categoria, Etapa } from '@/types';
 
@@ -14,17 +14,20 @@ function faltasDoPiloto(nome: string) {
   return faltas.filter((f) => f.nome === nome).length;
 }
 
-function chaveEtapa(e: Etapa) {
-  return `${e.turno}|${e.corrida}|${e.categoria}`;
+// Chave por turno+corrida (sem categoria) — Elite e Graduados da mesma noite compartilham a
+// mesma corrida no filtro, mesmo sendo etapas (baterias) separadas no cadastro de dados.
+function chaveCorrida(e: Etapa) {
+  return `${e.turno}|${e.corrida}`;
 }
 
-function TrackFlag({ todasEtapas, etapaSelecionada }: { todasEtapas: Etapa[]; etapaSelecionada?: Etapa }) {
+function TrackFlag({ todasEtapas, etapasSelecionadas }: { todasEtapas: Etapa[]; etapasSelecionadas?: Etapa[] }) {
   if (!todasEtapas.length) return null;
 
-  if (etapaSelecionada) {
+  if (etapasSelecionadas?.length) {
+    const [primeira] = etapasSelecionadas;
     return (
       <span className="track-flag ok">
-        🏁 Mostrando só T{etapaSelecionada.turno}·C{etapaSelecionada.corrida} · traçado {etapaSelecionada.tracado ?? '—'}
+        🏁 Mostrando só T{primeira.turno}·C{primeira.corrida} · traçado {primeira.tracado ?? '—'}
       </span>
     );
   }
@@ -54,14 +57,26 @@ function GrupoEqualizacao({
     .filter((e) => categorias.includes(e.categoria))
     .sort((a, b) => a.turno - b.turno || a.corrida - b.corrida);
 
+  // Uma corrida (turno+corrida) pode ter uma etapa por categoria (Elite e Graduados correm em
+  // baterias separadas na mesma noite) — o filtro agrupa por corrida, não por etapa individual.
+  const corridas: { key: string; turno: number; corrida: number; etapas: Etapa[] }[] = [];
+  for (const e of todasEtapas) {
+    const key = chaveCorrida(e);
+    const grupo = corridas.find((c) => c.key === key);
+    if (grupo) grupo.etapas.push(e);
+    else corridas.push({ key, turno: e.turno, corrida: e.corrida, etapas: [e] });
+  }
+
   const [corridaKey, setCorridaKey] = useState<string | null>(null);
   const [selecionados, setSelecionados] = useState<string[] | null>(null);
 
-  const etapaSelecionada = corridaKey ? todasEtapas.find((e) => chaveEtapa(e) === corridaKey) : undefined;
+  const corridaSelecionada = corridaKey ? corridas.find((c) => c.key === corridaKey) : undefined;
 
-  const rankingCorrida = etapaSelecionada ? computeEqualizacaoCorrida(etapaSelecionada) : [];
+  const rankingCorrida: NotaCorrida[] = corridaSelecionada
+    ? corridaSelecionada.etapas.flatMap((e) => computeEqualizacaoCorrida(e)).sort((a, b) => b.nota - a.nota)
+    : [];
   const rankingTemporada = computeEqualizacaoTemporada(todasEtapas, categorias);
-  const totalRanking = etapaSelecionada ? rankingCorrida.length : rankingTemporada.length;
+  const totalRanking = corridaSelecionada ? rankingCorrida.length : rankingTemporada.length;
 
   const todosPilotos = [...new Set(todasEtapas.flatMap((e) => e.resultados.map((r) => r.nome)))];
   const pilotosSelecionados = selecionados ?? todosPilotos;
@@ -76,7 +91,7 @@ function GrupoEqualizacao({
 
   const sub = !totalRanking
     ? 'aguardando dados'
-    : etapaSelecionada
+    : corridaSelecionada
       ? `${totalRanking} pilotos · corrida isolada, sem acúmulo`
       : `${totalRanking} pilotos · ${todasEtapas.length} corrida(s) somada(s) · visão por turno`;
 
@@ -87,22 +102,19 @@ function GrupoEqualizacao({
           <h2 style={{ color: corBase, fontSize: 20 }}>{titulo}</h2>
           <div className="updated-info">{subInfo ?? sub}</div>
         </div>
-        <TrackFlag todasEtapas={todasEtapas} etapaSelecionada={etapaSelecionada} />
+        <TrackFlag todasEtapas={todasEtapas} etapasSelecionadas={corridaSelecionada?.etapas} />
       </div>
 
-      {todasEtapas.length > 0 && (
+      {corridas.length > 0 && (
         <div className="pill-row" style={{ marginBottom: 10 }}>
           <button type="button" className={`pill${!corridaKey ? ' active' : ''}`} onClick={() => setCorridaKey(null)}>
             Temporada inteira (por turno)
           </button>
-          {todasEtapas.map((e) => {
-            const key = chaveEtapa(e);
-            return (
-              <button key={key} type="button" className={`pill${corridaKey === key ? ' active' : ''}`} onClick={() => setCorridaKey(corridaKey === key ? null : key)}>
-                T{e.turno}·C{e.corrida} — Traçado {e.tracado ?? '—'}
-              </button>
-            );
-          })}
+          {corridas.map((c) => (
+            <button key={c.key} type="button" className={`pill${corridaKey === c.key ? ' active' : ''}`} onClick={() => setCorridaKey(corridaKey === c.key ? null : c.key)}>
+              T{c.turno}·C{c.corrida} — Traçado {c.etapas[0].tracado ?? '—'}
+            </button>
+          ))}
         </div>
       )}
 
@@ -112,7 +124,7 @@ function GrupoEqualizacao({
 
       {totalRanking === 0 ? (
         <div className="empty-state">Sem etapas computadas ainda para {titulo.toLowerCase()}.</div>
-      ) : etapaSelecionada ? (
+      ) : corridaSelecionada ? (
         <div style={{ overflowX: 'auto' }}>
           <table className="consist-table">
             <thead>
