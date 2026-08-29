@@ -227,11 +227,11 @@ export default function EstatisticasPage() {
             onToggle={toggle}
           />
 
-          {isSingleCorrida && !etapaAtual && (
+          {isSingleCorrida && !etapaAtual?.voltas && (
             <div className="empty-state">Sem dados de volta a volta para esta corrida.</div>
           )}
 
-          {isSingleCorrida && etapaAtual && (
+          {isSingleCorrida && etapaAtual?.voltas && (
             <div className="chart-grid">
               <div className="panel">
                 <div className="chart-title">Tempo médio de volta (s)</div>
