@@ -36,7 +36,7 @@ export interface StandingRow {
   poles: number;
   vr: number;
   perdidos: number;
-  descartada?: { turno: number; corrida: number; pts: number };
+  descartada?: { turno: number; corrida: number; pts: number; faltou: boolean };
 }
 
 function baseMeta() {
@@ -84,12 +84,20 @@ export function computeStandingsGeral(
     corrida: number;
     pts: number;
     advertenciaPista: boolean;
+    faltou: boolean;
   }
   const perPiloto = new Map<string, EtapaPts[]>();
   const meta = new Map<string, ReturnType<typeof baseMeta>>();
   const perdidosMap = new Map<string, number>();
 
+  // Elenco da categoria: todo piloto que já correu pelo menos uma vez nos turnos 2/3.
+  const pilotos = new Set<string>();
   for (const etapa of relevantes) {
+    for (const r of etapa.resultados) pilotos.add(r.nome);
+  }
+
+  for (const etapa of relevantes) {
+    const participantes = new Set(etapa.resultados.map((r) => r.nome));
     for (const r of pointsForEtapa(etapa)) {
       const pen = penalidades
         .filter((p) => p.nome === r.nome && p.turno === etapa.turno && p.corrida === etapa.corrida)
@@ -97,7 +105,7 @@ export function computeStandingsGeral(
       const resultado = etapa.resultados.find((x) => x.nome === r.nome);
 
       const arr = perPiloto.get(r.nome) ?? [];
-      arr.push({ turno: etapa.turno, corrida: etapa.corrida, pts: r.pts - pen, advertenciaPista: !!resultado?.advertenciaPista });
+      arr.push({ turno: etapa.turno, corrida: etapa.corrida, pts: r.pts - pen, advertenciaPista: !!resultado?.advertenciaPista, faltou: false });
       perPiloto.set(r.nome, arr);
 
       const m = meta.get(r.nome) ?? baseMeta();
@@ -109,6 +117,16 @@ export function computeStandingsGeral(
       meta.set(r.nome, m);
 
       perdidosMap.set(r.nome, (perdidosMap.get(r.nome) ?? 0) + pen);
+    }
+
+    // Quem já corre na categoria mas faltou nesta etapa entra com 0 pontos — vale como
+    // descarte (uma falta pode ser a etapa descartada), mas se houver mais de uma falta
+    // só a primeira (varredura do fim pro começo) é descartada; as demais somam 0 mesmo.
+    for (const nome of pilotos) {
+      if (participantes.has(nome)) continue;
+      const arr = perPiloto.get(nome) ?? [];
+      arr.push({ turno: etapa.turno, corrida: etapa.corrida, pts: 0, advertenciaPista: false, faltou: true });
+      perPiloto.set(nome, arr);
     }
   }
 
@@ -122,7 +140,12 @@ export function computeStandingsGeral(
       // Descarta a pior etapa elegível (sem advertência de pista), varrendo do fim (pior) pro começo.
       for (let i = ordenadas.length - 1; i >= 0; i--) {
         if (!ordenadas[i].advertenciaPista) {
-          descartada = { turno: ordenadas[i].turno, corrida: ordenadas[i].corrida, pts: ordenadas[i].pts };
+          descartada = {
+            turno: ordenadas[i].turno,
+            corrida: ordenadas[i].corrida,
+            pts: ordenadas[i].pts,
+            faltou: ordenadas[i].faltou,
+          };
           contadas = ordenadas.filter((_, idx) => idx !== i);
           break;
         }

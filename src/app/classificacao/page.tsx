@@ -77,7 +77,9 @@ export default function ClassificacaoPage() {
                     <div>{titleCase(row.nome)}</div>
                     {row.descartada && (
                       <div className="descarte-sub">
-                        descartou T{row.descartada.turno}C{row.descartada.corrida} ({row.descartada.pts} pts)
+                        {row.descartada.faltou
+                          ? `descartou falta em T${row.descartada.turno}C${row.descartada.corrida}`
+                          : `descartou T${row.descartada.turno}C${row.descartada.corrida} (${row.descartada.pts} pts)`}
                       </div>
                     )}
                   </span>
