@@ -119,7 +119,7 @@ export default function CamisaBrancaPage() {
 
   const poleCorte = aplicarCorte(mergeComTurno1(standings, 'poles', camisaBrancaTurno1.poles), corridasComPoleRestantes, 1);
   const vrCorte = aplicarCorte(mergeComTurno1(standings, 'vr', camisaBrancaTurno1.vr), corridasRestantes, 1);
-  const podiosCorte = aplicarCorte(mergeComTurno1(standings, 'podios', camisaBrancaTurno1.podios), corridasRestantes, 6);
+  const podiosCorte = aplicarCorte(mergeComTurno1(standings, 'podios', camisaBrancaTurno1.podios), corridasRestantes, 1);
 
   const lideres: Record<string, number> = {};
   const registrarLideres = (itens: RankedItem[], max: number) => {
@@ -207,7 +207,6 @@ export default function CamisaBrancaPage() {
               max={podiosCorte.max}
               eliminados={podiosCorte.eliminados}
               corridasRestantes={corridasRestantes}
-              notaSufixo=" · até 6 pódios em disputa"
             />
           </div>
 
