@@ -57,7 +57,6 @@ function CorteCard({
   icon,
   itens,
   max,
-  eliminados,
   corridasRestantes,
   notaExtra = '',
   notaSufixo = '',
@@ -66,7 +65,6 @@ function CorteCard({
   icon: ReactNode;
   itens: RankedItem[];
   max: number;
-  eliminados: number;
   corridasRestantes: number;
   notaExtra?: string;
   notaSufixo?: string;
@@ -87,18 +85,10 @@ function CorteCard({
         itens.map((it) => (
           <div className={`cb-row${it.valor === max ? ' leader' : ''}`} key={it.nome}>
             <span className="cb-medal">{it.valor === max && <IconCrown className="cb-crown" />}</span>
-            <span className="cb-name">
-              {titleCase(it.nome)}
-              {it.valor !== max && eliminados > 0 && <span className="cb-gap-tag"> (−{max - it.valor})</span>}
-            </span>
+            <span className="cb-name">{titleCase(it.nome)}</span>
             <span className="cb-count num">{it.valor}</span>
           </div>
         ))
-      )}
-      {eliminados > 0 && (
-        <div className="cb-eliminated-summary">
-          +{eliminados} piloto{eliminados === 1 ? '' : 's'} sem chance matemática de alcançar a liderança
-        </div>
       )}
     </div>
   );
@@ -188,7 +178,6 @@ export default function CamisaBrancaPage() {
               icon={<IconPole className="cb-card-ic" />}
               itens={poleCorte.vivos}
               max={poleCorte.max}
-              eliminados={poleCorte.eliminados}
               corridasRestantes={corridasComPoleRestantes}
               notaExtra=" com pole"
             />
@@ -197,7 +186,6 @@ export default function CamisaBrancaPage() {
               icon={<IconVmr className="cb-card-ic" />}
               itens={vrCorte.vivos}
               max={vrCorte.max}
-              eliminados={vrCorte.eliminados}
               corridasRestantes={corridasRestantes}
             />
             <CorteCard
@@ -205,7 +193,6 @@ export default function CamisaBrancaPage() {
               icon={<IconPodio className="cb-card-ic" />}
               itens={podiosCorte.vivos}
               max={podiosCorte.max}
-              eliminados={podiosCorte.eliminados}
               corridasRestantes={corridasRestantes}
             />
           </div>
