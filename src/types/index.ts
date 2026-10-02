@@ -9,6 +9,8 @@ export interface ResultadoPiloto {
   tempoTotalSeg: number;
   /** Advertência de pista aplicada pelo kartódromo nesta etapa — já refletida na posição final. */
   advertenciaPista?: boolean;
+  /** Piloto convidado correndo junto (ex: de outra categoria) — ocupa a posição real na prova, mas não pontua. */
+  convidado?: boolean;
 }
 
 export interface VoltasPiloto {
