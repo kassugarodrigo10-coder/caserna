@@ -13,21 +13,17 @@ export interface ResultadoComPontos {
   poleBonus: 0 | 1;
   vrBonus: 0 | 1;
   pts: number;
-  convidado: boolean;
 }
 
 /** Converte o resultado de uma etapa (ordem de chegada) em pontos por piloto. */
 export function pointsForEtapa(etapa: Etapa): ResultadoComPontos[] {
-  const menorVolta = Math.min(...etapa.resultados.filter((r) => !r.convidado).map((r) => r.melhorVolta));
+  const menorVolta = Math.min(...etapa.resultados.map((r) => r.melhorVolta));
   return etapa.resultados.map((r, idx) => {
     const pos = idx + 1;
-    if (r.convidado) {
-      return { nome: r.nome, pos, base: 0, poleBonus: 0 as const, vrBonus: 0 as const, pts: 0, convidado: true };
-    }
     const base = POINTS_TABLE[pos] ?? 0;
     const poleBonus = etapa.pole === r.nome ? 1 : 0;
     const vrBonus = r.melhorVolta === menorVolta ? 1 : 0;
-    return { nome: r.nome, pos, base, poleBonus, vrBonus, pts: base + poleBonus + vrBonus, convidado: false };
+    return { nome: r.nome, pos, base, poleBonus, vrBonus, pts: base + poleBonus + vrBonus };
   });
 }
 
@@ -63,7 +59,6 @@ export function computeStandings(
   const map = new Map<string, StandingRow>();
   for (const etapa of relevantes) {
     for (const r of pointsForEtapa(etapa)) {
-      if (r.convidado) continue;
       const row = map.get(r.nome) ?? { nome: r.nome, pontos: 0, perdidos: 0, ...baseMeta() };
       row.participacoes++;
       if (r.pos === 1) row.vitorias++;
@@ -100,19 +95,15 @@ export function computeStandingsGeral(
   const meta = new Map<string, ReturnType<typeof baseMeta>>();
   const perdidosMap = new Map<string, number>();
 
-  // Elenco da categoria: todo piloto que já correu pelo menos uma vez nos turnos 2/3 (exceto
-  // convidados de outra categoria, que nunca entram na apuração desta).
+  // Elenco da categoria: todo piloto que já correu pelo menos uma vez nos turnos 2/3.
   const pilotos = new Set<string>();
   for (const etapa of relevantes) {
-    for (const r of etapa.resultados) {
-      if (!r.convidado) pilotos.add(r.nome);
-    }
+    for (const r of etapa.resultados) pilotos.add(r.nome);
   }
 
   for (const etapa of relevantes) {
     const participantes = new Set(etapa.resultados.map((r) => r.nome));
     for (const r of pointsForEtapa(etapa)) {
-      if (r.convidado) continue;
       const pen = penalidades
         .filter((p) => p.nome === r.nome && p.turno === etapa.turno && p.corrida === etapa.corrida)
         .reduce((s, p) => s + p.pontos, 0);
@@ -233,7 +224,6 @@ export function getEtapaSeries(etapas: Etapa[], categoria: Categoria): SeriePont
     const menorVolta = Math.min(...etapa.resultados.map((r) => r.melhorVolta));
 
     for (const r of resultados) {
-      if (r.convidado) continue;
       const anterior = acumulado.get(r.nome) ?? 0;
       const novo = anterior + r.pts;
       acumulado.set(r.nome, novo);
