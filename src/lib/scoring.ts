@@ -47,6 +47,11 @@ function baseMeta() {
   return { participacoes: 0, vitorias: 0, podios: 0, poles: 0, vr: 0 };
 }
 
+/** Desempate de pontuação igual: quem tem mais pódios (Top 6) fica à frente. */
+function compararStandings(a: StandingRow, b: StandingRow): number {
+  return b.pontos - a.pontos || b.podios - a.podios;
+}
+
 /** Classificação de um turno específico (soma simples, sem descarte). */
 export function computeStandings(
   etapas: Etapa[],
@@ -73,7 +78,7 @@ export function computeStandings(
       map.set(r.nome, row);
     }
   }
-  return [...map.values()].sort((a, b) => b.pontos - a.pontos);
+  return [...map.values()].sort(compararStandings);
 }
 
 /** Campeonato Geral: turnos 2 e 3, 1 etapa de descarte por piloto, máx. 5 etapas contabilizadas. */
@@ -172,7 +177,7 @@ export function computeStandingsGeral(
     });
   }
 
-  return rows.sort((a, b) => b.pontos - a.pontos);
+  return rows.sort(compararStandings);
 }
 
 export interface LapStat {
