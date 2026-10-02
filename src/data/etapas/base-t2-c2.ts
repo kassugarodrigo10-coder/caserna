@@ -8,6 +8,8 @@ import type { Etapa } from '@/types';
 // e da nota de equalização da Diretoria, que dependem de dado volta a volta.
 // "ANDRE TODORO" veio sem acento e com as letras trocadas — mantida a grafia já usada desde a
 // Corrida 1 (ANDRÉ TORODO).
+// "IGOR" veio só com o primeiro nome — confirmado com o usuário que é o mesmo IGOR HENRIQUE
+// que apareceu completo na Corrida 1 do Turno 3; renomeado aqui pra manter consistência.
 const baseT2C2: Etapa = {
   turno: 2,
   corrida: 2,
@@ -16,7 +18,7 @@ const baseT2C2: Etapa = {
   tracado: 134,
   resultados: [
     { nome: "GUSTAVO", voltas: 27, melhorVolta: 37.057, tempoTotalSeg: 1080.305 },
-    { nome: "IGOR", voltas: 27, melhorVolta: 36.803, tempoTotalSeg: 1084.907 },
+    { nome: "IGOR HENRIQUE", voltas: 27, melhorVolta: 36.803, tempoTotalSeg: 1084.907 },
     { nome: "MESSIAS", voltas: 27, melhorVolta: 37.29, tempoTotalSeg: 1090.397 },
     { nome: "SANTANA", voltas: 27, melhorVolta: 37.257, tempoTotalSeg: 1090.679 },
     { nome: "MUNHOZ", voltas: 27, melhorVolta: 37.314, tempoTotalSeg: 1094.912 },
