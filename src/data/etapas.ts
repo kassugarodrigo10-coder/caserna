@@ -11,6 +11,9 @@ import graduadosT2C2 from './etapas/graduados-t2-c2';
 import baseT3C1 from './etapas/base-t3-c1';
 import graduadosT3C1 from './etapas/graduados-t3-c1';
 import eliteT3C1 from './etapas/elite-t3-c1';
+import baseT3C2 from './etapas/base-t3-c2';
+import graduadosT3C2 from './etapas/graduados-t3-c2';
+import eliteT3C2 from './etapas/elite-t3-c2';
 
 // Toda nova etapa entra aqui como um novo item deste array — nenhuma tela precisa mudar.
 export const etapas: Etapa[] = [
@@ -26,6 +29,9 @@ export const etapas: Etapa[] = [
   baseT3C1,
   graduadosT3C1,
   eliteT3C1,
+  baseT3C2,
+  graduadosT3C2,
+  eliteT3C2,
 ];
 
 // Pontos perdidos por ocorrência disciplinar da organização do Caserna (não a ADV de pista,
