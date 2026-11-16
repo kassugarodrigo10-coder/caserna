@@ -17,6 +17,7 @@ const MENU = [
   { href: '/', label: 'Painel', icon: '▤' },
   { href: '/classificacao', label: 'Classificação', icon: '🏆' },
   { href: '/estatisticas', label: 'Estatísticas', icon: '📊' },
+  { href: '/calendario', label: 'Calendário', icon: '📅', badge: 'NOVO' },
 ];
 
 export default function Sidebar() {
@@ -66,9 +67,13 @@ export default function Sidebar() {
               href={item.href}
               className={`menu-item${pathname === item.href ? ' active' : ''}`}
               onClick={() => setSidebarOpen(false)}
+              style={item.badge ? { justifyContent: 'space-between' } : undefined}
             >
-              <span className="ic">{item.icon}</span>
-              {item.label}
+              <span>
+                <span className="ic">{item.icon}</span>
+                {item.label}
+              </span>
+              {item.badge && <span className="tag">{item.badge}</span>}
             </Link>
           ))}
         </nav>
