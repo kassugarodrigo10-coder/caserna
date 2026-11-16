@@ -1327,3 +1327,213 @@ footer.site-footer {
 .modal-close:hover {
   color: var(--text);
 }
+
+/* ---------- Calendário ---------- */
+
+.cal-next {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 24px;
+  background: linear-gradient(135deg, var(--panel-2), var(--panel));
+  border-color: var(--c-elite-glow);
+}
+
+.cal-next-count {
+  font-family: var(--font-barlow), sans-serif;
+  font-size: 42px;
+  font-weight: 800;
+  color: var(--c-elite);
+  line-height: 1;
+  min-width: 70px;
+}
+
+.cal-next-count span {
+  display: block;
+  font-family: var(--font-inter), sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-faint);
+  letter-spacing: 0.1em;
+  margin-top: 4px;
+}
+
+.cal-next-info {
+  border-left: 1px solid var(--line);
+  padding-left: 20px;
+}
+
+.cal-next-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-faint);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+  font-family: var(--font-barlow), sans-serif;
+}
+
+.cal-next-name {
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 3px;
+}
+
+.cal-next-date {
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+.cal-closing-grid,
+.cal-pretemp-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.cal-closing-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cal-closing-card.race {
+  border-color: var(--c-elite-glow);
+}
+
+.cal-closing-card.social {
+  border-color: var(--c-grad-soft);
+}
+
+.cal-closing-tag {
+  align-self: flex-start;
+}
+
+.cal-closing-card.social .cal-closing-tag {
+  background: var(--c-grad-soft);
+  color: var(--c-grad);
+}
+
+.cal-day {
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1;
+  font-family: var(--font-barlow), sans-serif;
+}
+
+.cal-day span {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-dim);
+}
+
+.cal-day-dim {
+  color: var(--text-dim);
+}
+
+.cal-meta {
+  font-size: 12.5px;
+  color: var(--text-faint);
+  margin-top: 2px;
+}
+
+.cal-pretemp-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border-style: dashed;
+}
+
+.cal-pretemp-tag {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-faint);
+  letter-spacing: 0.06em;
+  font-family: var(--font-barlow), sans-serif;
+}
+
+.cal-turno-block {
+  margin-top: 30px;
+}
+
+.cal-turno-block:first-child {
+  margin-top: 14px;
+}
+
+.cal-turno-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.cal-turno-num {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--c-elite);
+  font-family: var(--font-inter), sans-serif;
+}
+
+.cal-turno-title {
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+}
+
+.cal-turno-line {
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+
+.cal-turno-range {
+  font-size: 11.5px;
+  color: var(--text-faint);
+  white-space: nowrap;
+}
+
+.cal-etapa-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.cal-etapa-tag {
+  margin-bottom: 10px;
+  display: inline-block;
+}
+
+.cal-month {
+  font-size: 12.5px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+}
+
+.cal-wk {
+  font-size: 11.5px;
+  color: var(--text-faint);
+  border-top: 1px solid var(--line-soft);
+  padding-top: 8px;
+}
+
+@media (max-width: 760px) {
+  .cal-closing-grid,
+  .cal-pretemp-grid,
+  .cal-etapa-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cal-next {
+    flex-wrap: wrap;
+  }
+}
