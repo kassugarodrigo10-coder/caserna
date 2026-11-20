@@ -6,7 +6,7 @@ import type { Etapa } from '@/types';
 // as mesmas pessoas já cadastradas desde turnos anteriores, normalizados de volta para o nome
 // já em uso: "FERNANDA MICHAELLI"→FERNANDINHA, "ENRICO PAIVA"→ENRICO, "WEVERSON CARNEIRO"→
 // CARNEIRO, "MESSIAS ALVES"→MESSIAS, "LUIZ FAGNER"→FAGNER, "ALCIRIO CAVALCANTE"→ALCIRIO,
-// "ALTAIR ANTONIO"→ALTAIR, "WASHINTON MARQUES" (sem o G)→WASHINGTON.
+// "ALTAIR ANTONIO"→ALTAIR, "WASHINTON MARQUES" (sem o G)→WASHINGTON, "BRUNO PAULINO"→LONGO.
 // Dois pilotos chamados "GUSTAVO AUGUSTO" correram nesta prova, com karts diferentes (#016 e
 // #013). Por orientação do usuário: o do kart #016 é o GUSTAVO já cadastrado desde o Turno 2
 // (mantido como "GUSTAVO"); o do kart #013 é o MUNHOZ já cadastrado desde o Turno 2 (confirmado
@@ -22,7 +22,7 @@ const baseT3C3: Etapa = {
     { nome: "FERNANDINHA", voltas: 21, melhorVolta: 48.56, tempoTotalSeg: 1092.099 },
     { nome: "IGOR HENRIQUE", voltas: 21, melhorVolta: 48.419, tempoTotalSeg: 1094.133 },
     { nome: "LEANDRO KEMP", voltas: 21, melhorVolta: 48.728, tempoTotalSeg: 1103.575 },
-    { nome: "BRUNO PAULINO", voltas: 21, melhorVolta: 49.054, tempoTotalSeg: 1111.537 },
+    { nome: "LONGO", voltas: 21, melhorVolta: 49.054, tempoTotalSeg: 1111.537 },
     { nome: "CARNEIRO", voltas: 21, melhorVolta: 48.824, tempoTotalSeg: 1111.715 },
     { nome: "MESSIAS", voltas: 21, melhorVolta: 48.641, tempoTotalSeg: 1112.223 },
     { nome: "DABIEL SILVA", voltas: 21, melhorVolta: 48.7, tempoTotalSeg: 1113.128 },
@@ -53,7 +53,7 @@ const baseT3C3: Etapa = {
     "FERNANDINHA": { tempos: [49.283, 48.891, 48.994, 48.621, 49.033, 49.024, 48.763, 49.326, 49.281, 48.729, 49.153, 48.89, 48.56, 48.879, 48.618, 48.976, 48.714, 49.189, 48.836, 49.291, 49.096] },
     "IGOR HENRIQUE": { tempos: [50.281, 49.485, 49.286, 49.568, 49.024, 48.825, 49.273, 48.419, 49.032, 49.202, 48.567, 48.837, 48.568, 48.783, 48.556, 48.52, 48.881, 48.811, 48.732, 49.728, 49.167] },
     "LEANDRO KEMP": { tempos: [50.564, 50.325, 49.13, 49.345, 49.962, 50.639, 49.463, 50.139, 49.919, 49.335, 49.448, 49.767, 49.06, 49.165, 49.021, 49.165, 48.728, 48.852, 48.779, 49.154, 49.168] },
-    "BRUNO PAULINO": { tempos: [49.864, 49.621, 49.054, 49.462, 50.482, 49.566, 49.469, 50.546, 49.576, 49.674, 49.584, 49.766, 50.989, 49.333, 49.845, 49.431, 50.093, 49.727, 50.481, 49.607, 49.708] },
+    "LONGO": { tempos: [49.864, 49.621, 49.054, 49.462, 50.482, 49.566, 49.469, 50.546, 49.576, 49.674, 49.584, 49.766, 50.989, 49.333, 49.845, 49.431, 50.093, 49.727, 50.481, 49.607, 49.708] },
     "CARNEIRO": { tempos: [49.463, 49.878, 49.373, 48.824, 49.967, 49.586, 49.304, 50.784, 49.983, 49.969, 48.883, 50.148, 50.342, 49.444, 50.251, 49.77, 49.312, 49.693, 50.483, 49.524, 49.75] },
     "MESSIAS": { tempos: [50.12, 50.995, 49.472, 49.424, 49.839, 50.073, 49.162, 48.995, 50.116, 49.806, 49.049, 49.576, 50.319, 50.276, 49.668, 49.818, 50.534, 48.641, 49.634, 49.563, 49.923] },
     "DABIEL SILVA": { tempos: [50.304, 49.839, 48.917, 49.1, 49.908, 50.718, 49.466, 50.224, 49.873, 50.521, 48.704, 49.496, 50.826, 49.439, 50.232, 50.688, 49.652, 48.7, 50.678, 49.811, 50.093] },
