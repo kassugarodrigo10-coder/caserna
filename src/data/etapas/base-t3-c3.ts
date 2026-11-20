@@ -9,8 +9,8 @@ import type { Etapa } from '@/types';
 // "ALTAIR ANTONIO"→ALTAIR, "WASHINTON MARQUES" (sem o G)→WASHINGTON.
 // Dois pilotos chamados "GUSTAVO AUGUSTO" correram nesta prova, com karts diferentes (#016 e
 // #013). Por orientação do usuário: o do kart #016 é o GUSTAVO já cadastrado desde o Turno 2
-// (mantido como "GUSTAVO"); o do kart #013 é um piloto novo, mantido com o nome completo
-// "GUSTAVO AUGUSTO" para não colidir com o primeiro.
+// (mantido como "GUSTAVO"); o do kart #013 é o MUNHOZ já cadastrado desde o Turno 2 (confirmado
+// com o usuário), normalizado para "MUNHOZ".
 const baseT3C3: Etapa = {
   turno: 3,
   corrida: 3,
@@ -30,7 +30,7 @@ const baseT3C3: Etapa = {
     { nome: "DANIEL UBEDA", voltas: 21, melhorVolta: 48.59, tempoTotalSeg: 1117.187 },
     { nome: "GUSTAVO", voltas: 21, melhorVolta: 48.192, tempoTotalSeg: 1117.338 },
     { nome: "ERIC FARIA", voltas: 21, melhorVolta: 49.494, tempoTotalSeg: 1121.973 },
-    { nome: "GUSTAVO AUGUSTO", voltas: 21, melhorVolta: 48.833, tempoTotalSeg: 1122.524 },
+    { nome: "MUNHOZ", voltas: 21, melhorVolta: 48.833, tempoTotalSeg: 1122.524 },
     { nome: "TIAGO PAULINO", voltas: 21, melhorVolta: 49.608, tempoTotalSeg: 1127.633 },
     { nome: "YGOR HENRIQUE", voltas: 21, melhorVolta: 48.734, tempoTotalSeg: 1129.762 },
     { nome: "RODRIGO DA SILVA", voltas: 21, melhorVolta: 50.339, tempoTotalSeg: 1137.429 },
@@ -61,7 +61,7 @@ const baseT3C3: Etapa = {
     "DANIEL UBEDA": { tempos: [50.46, 51.474, 49.311, 50.009, 49.214, 49.829, 49.549, 49.675, 49.114, 49.269, 48.59, 49.6, 50.335, 52.808, 49.779, 49.016, 49.219, 49.554, 48.995, 49.922, 53.573] },
     "GUSTAVO": { tempos: [49.218, 48.827, 49.009, 48.771, 48.556, 48.604, 48.613, 49.483, 48.447, 48.49, 49.61, 48.535, 48.934, 48.49, 48.712, 49.148, 48.192, 49.077, 49.657, 77.336, 48.984] },
     "ERIC FARIA": { tempos: [50.777, 50.108, 49.833, 49.704, 50.328, 51.234, 49.552, 49.848, 49.965, 49.726, 50.072, 50.497, 49.549, 49.494, 49.751, 51.321, 49.916, 49.908, 50.203, 51.017, 49.654] },
-    "GUSTAVO AUGUSTO": { tempos: [49.835, 49.843, 49.623, 50.154, 59.17, 49.733, 48.833, 49.819, 56.897, 50.859, 49.157, 49.187, 50.651, 49.777, 49.339, 48.903, 49.482, 49.009, 49.079, 49.048, 50.052] },
+    "MUNHOZ": { tempos: [49.835, 49.843, 49.623, 50.154, 59.17, 49.733, 48.833, 49.819, 56.897, 50.859, 49.157, 49.187, 50.651, 49.777, 49.339, 48.903, 49.482, 49.009, 49.079, 49.048, 50.052] },
     "TIAGO PAULINO": { tempos: [51.974, 50.733, 49.721, 50.045, 50.947, 50.232, 49.67, 49.608, 50.881, 51.1, 50.792, 51.01, 51.06, 50.817, 49.631, 49.868, 49.695, 50.676, 49.775, 49.835, 49.913] },
     "YGOR HENRIQUE": { tempos: [50.079, 50.126, 49.596, 49.48, 50.085, 50.091, 49.294, 50.726, 48.97, 49.714, 49.536, 49.25, 48.907, 69.929, 49.194, 48.971, 49.996, 49.575, 49.184, 49.839, 48.734] },
     "RODRIGO DA SILVA": { tempos: [52.341, 50.963, 50.541, 50.526, 50.341, 51.121, 50.73, 50.381, 50.485, 51.003, 50.349, 50.339, 50.458, 50.885, 50.503, 50.465, 51.149, 51.258, 50.708, 50.403, 51.993] },
